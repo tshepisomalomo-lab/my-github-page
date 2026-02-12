@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>A Life-Changing Question</title>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <style>
+        body {
+            background-color: #fdf0f0;
+            margin: 0;
+            font-family: 'Georgia', serif;
+            color: #4a0e0e;
+            /* Changed to allow natural scrolling */
+            display: block; 
+            padding: 20px;
+            overflow-x: hidden;
+        }
+
+        .scroll-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+            padding-top: 40px;
+            padding-bottom: 80px;
+        }
+
+        .letter-card {
+            background: white;
+            padding: 40px 25px;
+            width: 100%;
+            max-width: 500px;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            border-top: 10px solid #d62828;
+            line-height: 1.8;
+            text-align: center;
+            animation: slideUp 1.5s ease-out;
+            box-sizing: border-box;
+        }
+
+        .heart-icon {
+            color: #d62828;
+            font-size: 3rem;
+            margin-bottom: 20px;
+            display: block;
+        }
+
+        .content p {
+            font-size: 1.15rem;
+            text-align: justify;
+            margin-bottom: 25px;
+            /* Adds a slight "parchment" feel */
+            font-style: italic;
+        }
+
+        .question {
+            font-weight: bold;
+            font-size: 1.6rem;
+            color: #d62828;
+            margin: 40px 0;
+            line-height: 1.4;
+        }
+
+        .btn-container {
+            display: flex;
+            flex-direction: column; /* Stacked on mobile for easier tapping */
+            justify-content: center;
+            align-items: center;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        button {
+            width: 80%; /* Larger tap targets for mobile */
+            max-width: 200px;
+            padding: 15px;
+            font-size: 1.2rem;
+            border-radius: 50px;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: 'Georgia', serif;
+        }
+
+        .yes-style {
+            background-color: #d62828;
+            color: white;
+            box-shadow: 0 4px 15px rgba(214, 40, 40, 0.3);
+        }
+
+        #noBtn {
+            background-color: #f8f9fa;
+            color: #888;
+            position: relative; /* Changed from fixed for better scroll behavior */
+            z-index: 5;
+        }
+
+        .signature {
+            margin-top: 50px;
+            font-family: 'Brush Script MT', cursive;
+            font-size: 2.5rem;
+            color: #d62828;
+            border-top: 1px solid #f0f0f0;
+            padding-top: 20px;
+        }
+
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(50px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Desktop Adjustment */
+        @media (min-width: 600px) {
+            .btn-container { flex-direction: row; }
+            .letter-card { padding: 50px; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="scroll-container">
+        <div class="letter-card">
+            <span class="heart-icon">💍</span>
+            
+            <div class="content">
+                <p>
+                    Behold, you are fair, my love; your eyes have the depth of the pools in Heshbon, 
+                    and your grace is like the morning light breaking over the mountains of spices. 
+                </p>
+                <p>
+                    Seeking the Queen of Sheba in a world of temporary trends, I value wisdom more than gold. 
+                    Let us walk together where the pomegranates bloom, for I am my beloved’s, and my beloved is mine.
+                </p>
+
+                <div class="question" id="mainQuestion">
+                    Tshepiso Malomo asks:<br>
+                    Will you dwell within my gates forever?
+                </div>
+            </div>
+
+            <div class="btn-container" id="buttonArea">
+                <button id="yesBtn" class="yes-style" onclick="celebrate()">Yes</button>
+                <button id="noBtn" onclick="handleNoInteraction()" onmouseover="handleNoInteraction()">No</button>
+            </div>
+
+            <div class="signature">
+                — Tshepiso Malomo
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let noCount = 0;
+
+        function handleNoInteraction() {
+            const noBtn = document.getElementById('noBtn');
+            noCount++;
+
+            if (noCount < 5) {
+                // On mobile, moving the button too far can break the scroll.
+                // We keep it within a reasonable range of the original area.
+                const randomX = (Math.random() - 0.5) * 200; 
+                const randomY = (Math.random() - 0.5) * 100;
+                
+                noBtn.style.transform = `translate(${randomX}px, ${randomY}px)`;
+            } else {
+                noBtn.innerText = "Yes!";
+                noBtn.style.transform = "translate(0,0)";
+                noBtn.classList.add('yes-style');
+                noBtn.onmouseover = null;
+                noBtn.onclick = celebrate;
+            }
+        }
+
+        function celebrate() {
+            const questionText = document.getElementById('mainQuestion');
+            questionText.innerHTML = "My heart is full.<br>I love you forever.";
+            
+            document.getElementById('buttonArea').style.display = 'none';
+            
+            const duration = 15 * 1000;
+            const animationEnd = Date.now() + duration;
+
+            const interval = setInterval(function() {
+                const timeLeft = animationEnd - Date.now();
+                if (timeLeft <= 0) return clearInterval(interval);
+
+                confetti({
+                    particleCount: 40,
+                    startVelocity: 30,
+                    spread: 360,
+                    origin: { x: Math.random(), y: Math.random() - 0.2 }
+                });
+            }, 250);
+        }
+    </script>
+</body>
+</html>
